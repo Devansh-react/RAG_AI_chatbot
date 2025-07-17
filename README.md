@@ -104,7 +104,17 @@ User Message
 Classifier (Intent)
    ├─→ RAG Lookup (Vector DB) ─→ Checker ─→ LLM Answer or RAG Answer
    └─→ Web Search ─→ Gemini LLM ─→ Final Answer
-```
+```graph TD
+    A[User Message] --> B{Classifier (Intent)};
+    B -- RAG Lookup (Vector DB) --> C[Checker];
+    C -- Valid RAG Answer --> D[RAG Answer];
+    C -- Invalid RAG Answer --> E[LLM Answer];
+    B -- Web Search --> F[Web Search Tool];
+    F --> G[Gemini LLM];
+    G --> H[Final Answer];
+    D --> H;
+    E --> H;
+
 
 Diagram:  
 ![Query Flow](./image.png)
