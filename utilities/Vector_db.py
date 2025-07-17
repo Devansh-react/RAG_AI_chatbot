@@ -39,13 +39,22 @@ embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
 vector_db = FAISS.from_documents(docs,embeddings)
 
 prompt = ChatPromptTemplate.from_template("""
-    Answer the following question based on the context provided.
-    Be detailed and to the point. If no information is found from the context, just return strongly **"No relevant information found."**
-    <context>
-    {context}
-    </context>
-    Question: {input}
+You are a helpful assistant. Use the provided context to answer the user's question clearly and concisely.
+
+<context>
+{context}
+</context>
+
+Question: {input}
+
+Instructions:
+- Only answer based on the information in the context.
+- If the context does not have the information, reply exactly: **"No relevant information found."**
+- Do not make up information or assume beyond what's provided.
+
+Answer:
 """)
+
 
 chain  = create_stuff_documents_chain(llm , prompt)
 #  retriver

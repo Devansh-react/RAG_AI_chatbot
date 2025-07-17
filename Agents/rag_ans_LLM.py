@@ -7,9 +7,13 @@ def rag_answer_LLM(state: State):
     rag_answer = state["retriver_doc"]
     user_query = state["messages"][-1].content
     history_messages = state["messages"][-5:]
-    system_prompt = f"""
-    You are the final answering agent in a multi-stage AI assistant.
-    You will get a RAG-based answer for the user query.
+    system_prompt = """
+    You are the final AI responder in a multi-agent RAG (Retrieval-Augmented Generation) pipeline.
+    You are given a user query and supporting RAG-based evidence.
+    Your job is to:
+    1. Give a helpful, concise, and friendly response based on the retrieved evidence.
+    2. Follow up with a relevant question to continue the conversation naturally.
+    Be conversational, curious, and professional — like a helpful human assistant.
     """
     chat_history = []
     for msg in history_messages:
