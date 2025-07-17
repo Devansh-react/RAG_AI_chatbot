@@ -1,0 +1,18 @@
+langchain
+langgraph
+langchain-google-genai
+langchain-core
+langchain-community
+faiss-cpu
+pydantic
+python-dotenv
+psycopg
+streamlit
+streamlit-chat
+requests
+
+
+
+# .venv\Scripts\activate
+# uvicorn main:app --reload
+# streamlit run app.py

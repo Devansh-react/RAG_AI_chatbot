@@ -1,0 +1,31 @@
+rag_ai_agent/
+│
+├── main.py                         # Entry point to run the agent
+├── graph_builder.py               # LangGraph graph logic
+├── tools/
+│   ├── rag_lookup.py              # RAG tool using vector DB
+│   ├── web_search.py              # DuckDuckGo/Web search tool
+│   
+├── agents/
+│   ├── router.py                  # Routes input to greeting, RAG, etc.
+│   ├── judge_sufficiency.py       # Decides if RAG result is enough
+│   ├── answer_agent.py            # Final answering step
+│
+├── schema/
+│   └── state.py                   # Defines `State` dataclass used across LangGraph
+│
+├── utilities/
+│   ├── llm_init.py                # LLM (ChatOpenAI / Gemini) initialization
+│   ├── vectordb_init.py           # FAISS/Chroma setup
+│   ├── prompt_templates.py        # Prompt templates
+│
+├── .env                           # Secrets, keys (OpenAI, SerpAPI, etc.)
+├── requirements.txt               # Dependencies
+└── README.md                      # Project documentation
+
+
+
+
+
+                      
+
