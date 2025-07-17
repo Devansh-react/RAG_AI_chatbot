@@ -26,7 +26,7 @@ if user_input:
         # Send to FastAPI backend
         response = requests.post(
             "http://localhost:8000/chat",
-            json={"User_message": user_input}
+            json={ "session_id": st.session_state.session_id,"User_message": user_input}
         )
 
         # Handle API response
