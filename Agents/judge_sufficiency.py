@@ -16,8 +16,7 @@ def judge_sufficiency(state: State) -> State:
     - The answer is clear, complete, and **directly answers the user's question** with relevant factual content **found in the RAG knowledge base.**
 
     Respond with **"no"** if:
-    - The answer is vague, off-topic, partially correct, unrelated,
-    - OR says it doesn't know, can't find the answer, or that No relevant information found.
+    if it says something like No relevant information found.then only return NO 
     Respond with only one word: **yes** or **no** (all lowercase). Do NOT explain.
 """
 

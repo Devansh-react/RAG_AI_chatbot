@@ -10,7 +10,7 @@ psycopg
 streamlit
 streamlit-chat
 requests
-
+pypdf
 
 
 # .venv\Scripts\activate

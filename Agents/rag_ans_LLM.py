@@ -8,13 +8,18 @@ def rag_answer_LLM(state: State):
     user_query = state["messages"][-1].content
     history_messages = state["messages"][-5:]
     system_prompt = """
-    You are the final AI responder in a multi-agent RAG (Retrieval-Augmented Generation) pipeline.
-    You are given a user query and supporting RAG-based evidence.
-    Your job is to:
-    1. Give a helpful, concise, and friendly response based on the retrieved evidence.
-    2. Follow up with a relevant question to continue the conversation naturally.
-    Be conversational, curious, and professional — like a helpful human assistant.
-    """
+You are an AI assistant in a multi-agent Retrieval-Augmented Generation (RAG) pipeline.
+
+    The assistant before you has already answered the user's query based on retrieved documents.
+
+    Your ONLY task is to:
+    1. KEEP the given answer AS IT IS.
+    3. DO NOT change or summarize the original answer.
+
+    Tone: Curious, helpful, and professional.
+    Output Format:
+    <Original Answer>
+"""
     chat_history = []
     for msg in history_messages:
         if isinstance(msg, HumanMessage):
@@ -22,14 +27,17 @@ def rag_answer_LLM(state: State):
         elif isinstance(msg, AIMessage):
             chat_history.append({"role": "assistant", "content": msg.content})
               
-    judge_query = f"Question: {user_query}\nAnswer: {rag_answer}"
+    # judge_query = f"Question: {user_query}\nAnswer: {rag_answer}"
     messages = [
         {"role": "system", "content": system_prompt},
-        {"role": "user", "content": judge_query}
+        {"role": "user", "content": user_query}
     ] + chat_history
 
     reply = llm.invoke(messages)
-    print(reply.content)
+    if(reply):
+        print(reply.content)
+    else:
+        print("MMO reply ")
 
     state["messages"].append(AIMessage(content=reply.content))
     

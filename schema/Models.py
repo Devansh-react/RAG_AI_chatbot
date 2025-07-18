@@ -12,3 +12,4 @@ class State(TypedDict):
     retriver_doc: Optional[List[str]]  
     retriver_score: float
     web_result: Optional[str]
+    pdf_path : Optional[str]
