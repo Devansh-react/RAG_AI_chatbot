@@ -2,3 +2,6 @@
 /.venv
 /image.png
 /__pycache__
+/faiss_index
+/uploaded_pdfs
+/__pycache__

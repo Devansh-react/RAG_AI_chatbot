@@ -24,7 +24,6 @@ def run_pdf_rag(state: State, query: str) -> str:
         return "**No PDF file found or invalid path.**"
 
     faiss_path = get_faiss_path(pdf_path)
-
     
     if(Path(faiss_path).exists()):
         embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
