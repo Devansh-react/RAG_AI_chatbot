@@ -32,7 +32,7 @@ def route_by_justification(state: State):
     print(f"Routing based on is_justified: {route}")
     if route == "yes":
         print("RAG answer sufficient → ending.")
-        return "END"
+        return "rag_ans_LLM"
     else:
         print("RAG insufficient → invoking LLM fallback.")
         return "final_answer"
@@ -69,7 +69,7 @@ def build_graph():
 
     
     graph_builder.add_edge("web_LLM_answer",END)
-    # graph_builder.add_edge("rag_ans_LLM",END)
+    graph_builder.add_edge("rag_ans_LLM",END)
     graph_builder.add_edge("final_answer",END)
     
     

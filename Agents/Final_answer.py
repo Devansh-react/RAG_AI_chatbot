@@ -4,6 +4,7 @@ from utilities.LLM_init import llm
 
 def final_answer(state: State):
     last_humman_message = next((m for m in reversed(state["messages"]) if isinstance(m, HumanMessage)), None)
+    history_messages = state["messages"]
     if not last_humman_message:
         raise ValueError("No HumanMessage found in state.")
     
@@ -25,12 +26,18 @@ def final_answer(state: State):
 
     Remember, your goal is to be useful and human-like. Make the user feel heard and helped.
     """
-
+    chat_history = []
+    for msg in history_messages:
+        if isinstance(msg, HumanMessage):
+            chat_history.append({"role": "user", "content": msg.content})
+        elif isinstance(msg, AIMessage):
+            chat_history.append({"role": "assistant", "content": msg.content}) 
 
     messages = [
         {"role": "system", "content": system_prompt},
         {"role": "user", "content": last_humman_message.content}
-    ]
+    ]+chat_history
+
 
     reply = llm.invoke(messages)
 

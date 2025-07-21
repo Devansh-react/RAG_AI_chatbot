@@ -6,20 +6,22 @@ def rag_answer_LLM(state: State):
   
     rag_answer = state["retriver_doc"]
     user_query = state["messages"][-1].content
-    history_messages = state["messages"][-5:]
+    history_messages = state["messages"]
     system_prompt = """
-You are an AI assistant in a multi-agent Retrieval-Augmented Generation (RAG) pipeline.
+    You are a helpful assistant.
 
-    The assistant before you has already answered the user's query based on retrieved documents.
+    You are given:
+    - The user's current question
+    - A RAG-generated answer (factual)
+    - A short history of the conversation
 
-    Your ONLY task is to:
-    1. KEEP the given answer AS IT IS.
-    3. DO NOT change or summarize the original answer.
+    Your job is to:
+    1. Rephrase the RAG answer in a more conversational and engaging tone
+    2. Keep all factual information intact
+    3. Optionally add a follow-up question to keep the conversation going
 
-    Tone: Curious, helpful, and professional.
-    Output Format:
-    <Original Answer>
-"""
+    Respond in a friendly and concise manner.
+    """
     chat_history = []
     for msg in history_messages:
         if isinstance(msg, HumanMessage):
@@ -27,18 +29,15 @@ You are an AI assistant in a multi-agent Retrieval-Augmented Generation (RAG) pi
         elif isinstance(msg, AIMessage):
             chat_history.append({"role": "assistant", "content": msg.content})
               
-    # judge_query = f"Question: {user_query}\nAnswer: {rag_answer}"
+    judge_query = f"Question: {user_query}\nAnswer: {rag_answer}"
     messages = [
         {"role": "system", "content": system_prompt},
-        {"role": "user", "content": user_query}
+        {"role": "user", "content": judge_query}
     ] + chat_history
 
     reply = llm.invoke(messages)
     if(reply):
         print(reply.content)
-    else:
-        print("MMO reply ")
-
     state["messages"].append(AIMessage(content=reply.content))
     
     return state

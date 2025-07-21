@@ -6,14 +6,43 @@ from fastapi import FastAPI
 from database.message_history import get_pg_history
 from typing import Optional
 app = FastAPI()
+from fastapi import UploadFile, File
+import os 
+from fastapi.middleware.cors import CORSMiddleware
+
+bot_graph = build_graph()   
 
 
 class User_input(BaseModel):
     session_id:str
-    User_message: str
+    User_message: str   
     pdf_path: Optional[str] 
 
-bot_graph = build_graph()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],       
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+import os
+
+@app.post("/upload_pdf")
+def upload_pdf(file: UploadFile = File(...)):
+    upload_dir = "uploaded_pdfs"
+    os.makedirs(upload_dir, exist_ok=True)
+
+    filename = file.filename
+    if not filename or not isinstance(filename, str):
+        raise ValueError("Uploaded file has no valid filename.")
+
+    file_location = os.path.join(upload_dir, filename)
+    with open(file_location, "wb") as f:
+        f.write(file.file.read())
+    return {"pdf_path": file_location}
+
+
 @app.post("/chat")
 def chat(input: User_input):
     session_id = input.session_id
@@ -53,3 +82,4 @@ def chat(input: User_input):
 # if __name__ == "__main__":
 #     test = User_input(session_id="agfa", User_message="HI")
 #     print(chat(test))
+    
