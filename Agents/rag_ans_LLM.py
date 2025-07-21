@@ -8,7 +8,7 @@ def rag_answer_LLM(state: State):
     user_query = state["messages"][-1].content
     history_messages = state["messages"]
     system_prompt = """
-    You are a helpful assistant.
+    You are a helpful assistant .dont't behave like a chat bot or any AI based agent mimic like a human beign with feelings 
 
     You are given:
     - The user's current question

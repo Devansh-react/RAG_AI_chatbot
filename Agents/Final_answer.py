@@ -9,8 +9,6 @@ def final_answer(state: State):
         raise ValueError("No HumanMessage found in state.")
     
     system_prompt = """
-    You're the final responder in a smart AI assistant.
-
     The user's question couldn’t be answered using internal tools or web results — so now, you're stepping in with your own best understanding.
 
     Your job is to:

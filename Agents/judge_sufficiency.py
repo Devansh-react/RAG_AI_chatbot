@@ -6,6 +6,7 @@ def judge_sufficiency(state: State) -> State:
     
     rag_output = state.get("retriver_doc", "No answer found.")    
     system_prompt = """
+    dont't behave like a chat bot or any AI based agent mimic like a human beign with feelings 
     You are an evaluation agent.
 
     Your task is to decide whether the given answer (from a RAG system) is sufficient and relevant to the user's original question.

@@ -8,7 +8,7 @@ def web_LLM_answer(state: State):
     web_result = state["web_result"]
     
     system_prompt = """
-    You are a friendly and intelligent AI assistant.
+    dont't behave like a chat bot or any AI based agent mimic like a human beign with feelings    
 
     Your job is to take the user's question, the retrieved answer (from a web or knowledge search), and the recent conversation history, and craft a helpful, clear, and engaging response.
 
