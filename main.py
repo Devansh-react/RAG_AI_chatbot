@@ -45,7 +45,7 @@ def upload_pdf(file: UploadFile = File(...)):
 
 
 @app.post("/chat")
-def chat(input: User_input):
+async def chat(input: User_input):
     session_id = input.session_id
     last_message = input.User_message
     pdf_path = input.pdf_path
