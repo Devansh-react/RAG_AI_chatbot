@@ -12,6 +12,7 @@ streamlit-chat
 requests
 pypdf
 uvicorn
+fastapi
 
 
 # .venv\Scripts\activate
