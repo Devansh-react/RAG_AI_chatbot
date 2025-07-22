@@ -17,7 +17,7 @@ class User_input(BaseModel):
     session_id:str
     User_message: str   
     pdf_path: Optional[str] 
-
+#  req python-multipart lib 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],       

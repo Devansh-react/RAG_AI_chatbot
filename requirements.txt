@@ -13,6 +13,7 @@ requests
 pypdf
 uvicorn
 fastapi
+python-multipart
 
 
 # .venv\Scripts\activate
