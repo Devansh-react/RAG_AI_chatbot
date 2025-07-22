@@ -3,12 +3,13 @@ from langchain_core.messages import HumanMessage, AIMessage
 from schema.Models import State
 from graph.graph_builder import build_graph
 from fastapi import FastAPI
-from database.message_history import get_pg_history
+from database.message_history import get_sqlite_history
 from typing import Optional
 app = FastAPI()
 from fastapi import UploadFile, File
 import os 
 from fastapi.middleware.cors import CORSMiddleware
+from database.sql_lite import create_tables
 
 bot_graph = build_graph()   
 
@@ -27,7 +28,7 @@ app.add_middleware(
 )
 
 import os
-
+create_tables()
 @app.post("/upload_pdf")
 def upload_pdf(file: UploadFile = File(...)):
     upload_dir = "uploaded_pdfs"
@@ -49,18 +50,18 @@ def chat(input: User_input):
     last_message = input.User_message
     pdf_path = input.pdf_path
     
-    history_message = get_pg_history(session_id)
+    history_message = get_sqlite_history(session_id)
     
     history_message.add_user_message(last_message)
     
-    
     message = []
-    for m in history_message.messages:
-        if m.type == "human":
-            message.append(HumanMessage(content=m.content))
-        else:
-            message.append(AIMessage(content=m.content))
     
+    for m in history_message.messages:
+        if m["type"] == "human":
+            message.append(HumanMessage(content=m["content"]))
+        elif m["type"] == "ai":
+            message.append(AIMessage(content=m["content"]))
+            
     
     state: State = State(
         session_ID=session_id,

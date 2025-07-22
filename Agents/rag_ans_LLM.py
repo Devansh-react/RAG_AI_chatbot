@@ -34,7 +34,7 @@ def rag_answer_LLM(state: State):
         {"role": "system", "content": system_prompt},
         {"role": "user", "content": judge_query}
     ] + chat_history
-
+    # print(chat_history[-5:])
     reply = llm.invoke(messages)
     if(reply):
         print(reply.content)
