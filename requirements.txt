@@ -11,6 +11,7 @@ streamlit
 streamlit-chat
 requests
 pypdf
+uvicorn
 
 
 # .venv\Scripts\activate
