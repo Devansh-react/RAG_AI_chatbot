@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 import os
 load_dotenv()
 
-connection_string =  os.getenv("postgresql://message_history_user:qdPuGB35SuQpmX9E6meAguaz7ZcCFB9r@dpg-d1vku0s9c44c73dv9a80-a/message_history")
+connection_string =  os.getenv("DATABASE_URL")
 
 def get_pg_history(session_id: str):
     return PostgresChatMessageHistory(
