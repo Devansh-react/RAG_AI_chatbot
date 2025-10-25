@@ -1,4 +1,5 @@
 import sqlite3
+
 class SQLiteChatMessageHistory:
     # initalise the db by its path 
     def __init__(self, session_id: str, db_path="chat_history.db"):

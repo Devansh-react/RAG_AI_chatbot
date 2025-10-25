@@ -45,7 +45,7 @@ def run_pdf_rag(state: State, query: str) -> str:
         chunks = text_splitter.split_documents(docs)
 
         # Step 3: Create embeddings
-        embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+        embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")   
         vector_db = FAISS.from_documents(chunks, embeddings)
         vector_db.save_local(faiss_path)
 

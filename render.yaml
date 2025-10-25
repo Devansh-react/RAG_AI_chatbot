@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: my-fastapi-backend
+    env: python
+    pythonVersion: 3.11.9   # ✅ Downgraded from 3.13 to 3.11 for better compatibility
+
+    buildCommand: |
+      pip install --upgrade pip
+      pip install -r requirements.txt
+
+    startCommand: |
+      uvicorn main:app --host 0.0.0.0 --port $PORT
+
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: PORT
+        value: 8000
+      # Add any other API keys or environment variables here
+
+    autoDeploy: true
+
+    healthCheckPath: /

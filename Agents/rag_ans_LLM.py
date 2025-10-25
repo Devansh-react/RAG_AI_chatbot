@@ -39,5 +39,4 @@ def rag_answer_LLM(state: State):
     if(reply):
         print(reply.content)
     state["messages"].append(AIMessage(content=reply.content))
-    
     return state
