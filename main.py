@@ -19,6 +19,7 @@ class User_input(BaseModel):
     User_message: str   
     pdf_path: Optional[str] 
 #  req python-multipart lib 
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],       

@@ -1,88 +1,87 @@
-from langchain_google_genai import GoogleGenerativeAIEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_core.prompts import PromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough
+from langchain_community.document_loaders import PyPDFLoader
 
 from utilities.LLM_init import llm
-from langchain_community.document_loaders import PyPDFLoader
 from schema.Models import State
 from pathlib import Path
 import hashlib
 import os
 
-# Create a unique FAISS index path based on the PDF file path
-def get_faiss_path(pdf_path: str) -> str:
-    hashed = hashlib.md5(pdf_path.encode()).hexdigest()
-    return f"faiss_index/{hashed}"
 
-def run_pdf_rag(state: State, query: str) -> str:
+def get_faiss_path(pdf_path: str, model_name: str) -> str:
+    key = f"{pdf_path}_{model_name}"
+    return f"faiss_index/{hashlib.md5(key.encode()).hexdigest()}"
+
+
+def run_pdf_rag(state: State, query: str):
     pdf_path = state.get("pdf_path")
 
-    # Validate PDF existence
     if not pdf_path or not os.path.exists(pdf_path):
-        return "**No PDF file found or invalid path.**"
+        return "No PDF file found.", []
 
-    faiss_path = get_faiss_path(pdf_path)
+    model_name = "sentence-transformers/all-mpnet-base-v2"
+    faiss_path = get_faiss_path(pdf_path, model_name)
 
-    # Initialize embeddings model
-    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+    embeddings = HuggingFaceEmbeddings(
+        model_name=model_name,
+        encode_kwargs={"normalize_embeddings": True}
+    )
 
-    # Load or create FAISS index
+    # Load or build FAISS
     if Path(faiss_path).exists():
         vector_db = FAISS.load_local(
             faiss_path, embeddings, allow_dangerous_deserialization=True
         )
     else:
-        loader = PyPDFLoader(pdf_path)
-        docs = loader.load()
-        if not docs:
-            return "**Failed to read PDF.**"
-
-        # Split text into manageable chunks
-        text_splitter = RecursiveCharacterTextSplitter(
-            separators=["\n\n", "\n", " ", ".", ","],
-            chunk_size=150,
-            chunk_overlap=20,
-            length_function=len,
+        docs = PyPDFLoader(pdf_path).load()
+        splitter = RecursiveCharacterTextSplitter(
+            chunk_size=550,
+            chunk_overlap=60,
         )
-        chunks = text_splitter.split_documents(docs)
-
-        # Create FAISS index and persist locally
+        chunks = splitter.split_documents(docs)
         vector_db = FAISS.from_documents(chunks, embeddings)
         vector_db.save_local(faiss_path)
 
-    # Create prompt template
+    # ---- RETRIEVE (NO SCORE FILTERING) ----
+    retriever = vector_db.as_retriever(search_kwargs={"k": 6})
+    retrieved_docs = retriever.invoke(query)
+
+    # ---- GENERATE ----
+    def format_docs(docs):
+        return "\n\n".join(d.page_content for d in docs)
+
     prompt = PromptTemplate(
-        template="""Use the following context to answer the question. If you cannot answer based on the context, say "No relevant information found."
+        template="""
+You must answer ONLY using the context below.
+If the context does not contain the answer, say:
+"No relevant information found."
 
-Context: {context}
+Context:
+{context}
 
-Question: {question}
+Question:
+{question}
 
-Answer:""",
+Answer:
+""",
         input_variables=["context", "question"],
     )
 
-    # Build retrieval chain using LCEL
-    retriever = vector_db.as_retriever(
-        search_type="mmr",
-        search_kwargs={"k": 6, "lambda_mult": 0.25}
-    )
-    
-    # Format documents helper function
-    def format_docs(docs):
-        return "\n\n".join(doc.page_content for doc in docs)
-    
-    # Create the chain using LCEL
     chain = (
-        {"context": retriever | format_docs, "question": RunnablePassthrough()}
+        {
+            "context": lambda _: format_docs(retrieved_docs),
+            "question": RunnablePassthrough(),
+        }
         | prompt
         | llm
         | StrOutputParser()
     )
 
-    # Execute query
-    result = chain.invoke(query)
-    return result
+    answer = chain.invoke(query)
+
+    return answer, retrieved_docs

@@ -1,5 +1,6 @@
 from typing import Annotated , Optional,List
 from typing_extensions import TypedDict, Dict , Literal
+from langchain_core.documents import Document
 from langgraph.graph.message import add_messages
 
 
@@ -10,7 +11,7 @@ class State(TypedDict):
     messages: Annotated[List, add_messages]  
     messages_route: Optional[str]
     is_justified: Optional[Literal["yes", "no"]]
-    retriver_doc: Optional[List[str]]  
+    retriver_doc: Optional[List[Document]]
     retriver_score: float
     web_result: Optional[str]
     pdf_path : Optional[str]

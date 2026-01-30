@@ -1,7 +1,7 @@
 # tools/web_search.py
 from langchain_community.utilities import GoogleSerperAPIWrapper
 from schema.Models import State
-from langchain_core.messages import HumanMessage, AIMessage
+from langchain_core.messages import HumanMessage
 import os
 from dotenv import load_dotenv
 
