@@ -12,7 +12,7 @@ def judge_sufficiency(state: State) -> State:
     context = "\n\n".join(d.page_content for d in docs)
 
     system_prompt = """
-You are a strict evaluator.
+You are a strict evaluator. 
 
 Decide whether the answer is relevant and correctly answers the user's question
 using ONLY the provided context.
