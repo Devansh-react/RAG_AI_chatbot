@@ -3,6 +3,7 @@ langgraph
 langchain-google-genai
 langchain-core
 langchain-community
+langchain-huggingface
 faiss-cpu
 pydantic
 python-dotenv
